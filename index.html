@@ -291,6 +291,16 @@ function toggleMusic() {
   }
 }
 
+function startSurprise() {
+  music.play().then(() => {
+    musicButton.textContent = '♫ Pause Music';
+  }).catch(() => {
+    musicButton.textContent = '♫ Play Music';
+  });
+
+  showPage(2);
+}
+
 // Pink matrix rain
 const canvas = document.getElementById('matrix');
 const ctx = canvas.getContext('2d');
