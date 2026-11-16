@@ -292,13 +292,17 @@ function toggleMusic() {
 }
 
 function startSurprise() {
+  showPage(2);
+
+  music.volume = 1;
+  music.currentTime = 0;
+
   music.play().then(() => {
     musicButton.textContent = '♫ Pause Music';
-  }).catch(() => {
+  }).catch((error) => {
+    console.error('Music playback failed:', error);
     musicButton.textContent = '♫ Play Music';
   });
-
-  showPage(2);
 }
 
 // Pink matrix rain
