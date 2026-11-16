@@ -1,0 +1,339 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Birthday Surprise ❤️</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #08060a;
+  color: #ff8fc7;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  opacity: .35;
+}
+
+.page {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 30px 20px;
+  animation: appear 1s ease;
+}
+
+.page.active {
+  display: flex;
+}
+
+@keyframes appear {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+h1 {
+  font-size: clamp(2rem, 7vw, 3.5rem);
+  margin: 15px 0;
+  text-shadow: 0 0 20px #ff69b4;
+}
+
+p {
+  max-width: 600px;
+  line-height: 1.8;
+  font-size: 1.05rem;
+  margin: 12px auto;
+  color: #f5c5df;
+}
+
+.heart {
+  font-size: 85px;
+  animation: heartbeat 1.5s infinite;
+  filter: drop-shadow(0 0 20px #ff69b4);
+}
+
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+
+button {
+  margin: 18px 8px;
+  padding: 14px 28px;
+  border: 1px solid #ff69b4;
+  border-radius: 30px;
+  background: #ff69b4;
+  color: #160713;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: .3s;
+}
+
+button:hover {
+  background: transparent;
+  color: #ff9acb;
+  box-shadow: 0 0 20px #ff69b4;
+}
+
+.countdown {
+  font-size: clamp(1.4rem, 5vw, 2.2rem);
+  font-weight: bold;
+  margin: 25px 0;
+  text-shadow: 0 0 15px #ff69b4;
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  width: 100%;
+  max-width: 650px;
+  margin: 25px auto;
+}
+
+.photo {
+  aspect-ratio: 1;
+  border: 2px solid #ff69b4;
+  border-radius: 15px;
+  overflow: hidden;
+  background: #21101d;
+  box-shadow: 0 0 15px #ff69b455;
+}
+
+.photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photo-placeholder {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  font-size: 2rem;
+}
+
+.music-control {
+  position: fixed;
+  z-index: 5;
+  top: 15px;
+  right: 15px;
+  margin: 0;
+  padding: 10px 16px;
+}
+
+.small {
+  color: #b98ba6;
+  font-size: .85rem;
+}
+
+@media(max-width: 480px) {
+  .gallery { gap: 8px; }
+  .page { padding: 20px 15px; }
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="matrix"></canvas>
+
+<audio id="music" loop>
+  <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_4f2e7b6d7b.mp3" type="audio/mpeg">
+</audio>
+
+<button class="music-control" id="musicButton" onclick="toggleMusic()">
+  ♫ Play Music
+</button>
+
+<!-- PAGE 1: OPENING -->
+<section class="page active" id="page1">
+  <div class="heart">❤️</div>
+  <p>A little surprise is waiting for you...</p>
+  <h1>Someone Special</h1>
+  <p>Today, I prepared something just for you.</p>
+  <button onclick="showPage(2)">Open Your Surprise ✨</button>
+</section>
+
+<!-- PAGE 2: COUNTDOWN -->
+<section class="page" id="page2">
+  <div class="heart">🎂</div>
+  <h1>Something Special Is Coming</h1>
+  <p>Every beautiful moment deserves to be celebrated.</p>
+  <div class="countdown" id="countdown">Loading...</div>
+  <p class="small">December 25, 2026</p>
+  <button onclick="showPage(3)">Continue ❤️</button>
+</section>
+
+<!-- PAGE 3: BIRTHDAY -->
+<section class="page" id="page3">
+  <div class="heart">🎉</div>
+  <h1>Happy Birthday!</h1>
+  <p>May your day be filled with love, laughter, happiness, and beautiful memories.</p>
+  <p>You deserve every wonderful thing life has to offer.</p>
+  <button onclick="showPage(4)">A Little Message 💌</button>
+</section>
+
+<!-- PAGE 4: PERSONAL MESSAGE -->
+<section class="page" id="page4">
+  <div class="heart">💗</div>
+  <h1>For You</h1>
+  <p>
+    As long as you're smiling, I'm happy.
+    I hope you never lose that beautiful smile.
+    May life always give you reasons to be happy.
+    Stay wonderful, and never forget how special you are.
+  </p>
+  <p>With love, ❤️</p>
+  <button onclick="showPage(5)">Our Memories 📸</button>
+</section>
+
+<!-- PAGE 5: GALLERY -->
+<section class="page" id="page5">
+  <div class="heart">💕</div>
+  <h1>Beautiful Memories</h1>
+  <p>Some moments deserve to be remembered forever.</p>
+
+  <div class="gallery">
+    <div class="photo">
+      <img src="images/photo1.jpg" alt="Memory 1"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">
+      <div class="photo-placeholder" style="display:none">❤️</div>
+    </div>
+    <div class="photo">
+      <img src="images/photo2.jpg" alt="Memory 2"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">
+      <div class="photo-placeholder" style="display:none">🌷</div>
+    </div>
+    <div class="photo">
+      <img src="images/photo3.jpg" alt="Memory 3"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">
+      <div class="photo-placeholder" style="display:none">💗</div>
+    </div>
+  </div>
+
+  <h2>Once Again, Happy Birthday! ❤️</h2>
+  <p>May your story always be filled with beautiful chapters.</p>
+  <button onclick="showPage(1)">Watch Again ↻</button>
+</section>
+
+<script>
+function showPage(number) {
+  document.querySelectorAll('.page').forEach(page => {
+    page.classList.remove('active');
+  });
+
+  document.getElementById('page' + number).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// Birthday countdown
+const birthdayDate = new Date('2026-12-25T00:00:00');
+
+function updateCountdown() {
+  const now = new Date();
+  const diff = birthdayDate - now;
+  const output = document.getElementById('countdown');
+
+  if (diff <= 0) {
+    output.textContent = 'HAPPY BIRTHDAY! 🎂';
+    return;
+  }
+
+  const days = Math.floor(diff / 86400000);
+  const hours = Math.floor((diff % 86400000) / 3600000);
+  const minutes = Math.floor((diff % 3600000) / 60000);
+  const seconds = Math.floor((diff % 60000) / 1000);
+
+  output.textContent =
+    `${days} Days ${hours} Hours ${minutes} Minutes ${seconds} Seconds`;
+}
+
+updateCountdown();
+setInterval(updateCountdown, 1000);
+
+// Music control
+const music = document.getElementById('music');
+const musicButton = document.getElementById('musicButton');
+
+function toggleMusic() {
+  if (music.paused) {
+    music.play().then(() => {
+      musicButton.textContent = '♫ Pause Music';
+    }).catch(() => {
+      musicButton.textContent = 'Music unavailable';
+    });
+  } else {
+    music.pause();
+    musicButton.textContent = '♫ Play Music';
+  }
+}
+
+// Pink matrix rain
+const canvas = document.getElementById('matrix');
+const ctx = canvas.getContext('2d');
+
+let drops = [];
+
+function resizeCanvas() {
+  const ratio = window.devicePixelRatio || 1;
+  canvas.width = window.innerWidth * ratio;
+  canvas.height = window.innerHeight * ratio;
+  ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+
+  const columns = Math.floor(window.innerWidth / 20);
+  drops = Array(columns).fill(1);
+}
+
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+function drawMatrix() {
+  ctx.fillStyle = 'rgba(8, 6, 10, 0.12)';
+  ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
+
+  ctx.fillStyle = '#ff69b4';
+  ctx.font = '15px monospace';
+
+  drops.forEach((drop, index) => {
+    const character = String.fromCharCode(
+      0x30A0 + Math.random() * 96
+    );
+
+    ctx.fillText(character, index * 20, drop * 20);
+
+    if (drop * 20 > window.innerHeight && Math.random() > 0.975) {
+      drops[index] = 0;
+    }
+
+    drops[index]++;
+  });
+}
+
+setInterval(drawMatrix, 50);
+</script>
+
+</body>
+</html>
