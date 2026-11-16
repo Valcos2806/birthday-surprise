@@ -217,11 +217,18 @@ button:hover {
   <p>Some moments deserve to be remembered forever.</p>
 
   <div class="gallery">
-    <div class="photo">
-      <img src="images/photo1.jpg" alt="Memory 1"
-        onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">
-      <div class="photo-placeholder" style="display:none">❤️</div>
-    </div>
+  <div class="photo">
+    <div class="photo-placeholder">❤️</div>
+  </div>
+
+  <div class="photo">
+    <div class="photo-placeholder">🌷</div>
+  </div>
+
+  <div class="photo">
+    <div class="photo-placeholder">💗</div>
+  </div>
+</div>
     <div class="photo">
       <img src="images/photo2.jpg" alt="Memory 2"
         onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">
@@ -292,17 +299,20 @@ function toggleMusic() {
 }
 
 function startSurprise() {
+  music.volume = 1;
+
+  const playPromise = music.play();
+
   showPage(2);
 
-  music.volume = 1;
-  music.currentTime = 0;
-
-  music.play().then(() => {
-    musicButton.textContent = '♫ Pause Music';
-  }).catch((error) => {
-    console.error('Music playback failed:', error);
-    musicButton.textContent = '♫ Play Music';
-  });
+  if (playPromise !== undefined) {
+    playPromise.then(() => {
+      musicButton.textContent = '♫ Pause Music';
+    }).catch((error) => {
+      console.error('Music playback failed:', error);
+      musicButton.textContent = '♫ Play Music';
+    });
+  }
 }
 
 // Pink matrix rain
